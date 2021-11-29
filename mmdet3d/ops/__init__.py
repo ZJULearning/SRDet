@@ -17,6 +17,8 @@ from .pointnet_modules import (PAConvCUDASAModule, PAConvCUDASAModuleMSG,
                                PAConvSAModule, PAConvSAModuleMSG,
                                PointFPModule, PointSAModule, PointSAModuleMSG,
                                build_sa_module)
+from .pointnet_modules import (
+    PointFPModule, PointSAModule, PointSAModuleMSG, build_sa_module, PointFPModulev2)
 from .roiaware_pool3d import (RoIAwarePool3d, points_in_boxes_batch,
                               points_in_boxes_cpu, points_in_boxes_gpu)
 from .sparse_block import (SparseBasicBlock, SparseBottleneck,
@@ -37,5 +39,5 @@ __all__ = [
     'points_in_boxes_batch', 'get_compiler_version', 'assign_score_withk',
     'get_compiling_cuda_version', 'Points_Sampler', 'build_sa_module',
     'PAConv', 'PAConvCUDA', 'PAConvSAModuleMSG', 'PAConvSAModule',
-    'PAConvCUDASAModule', 'PAConvCUDASAModuleMSG'
+    'PAConvCUDASAModule', 'PAConvCUDASAModuleMSG', 'PointFPModulev2',
 ]

@@ -30,6 +30,8 @@ class BallQuery(Function):
         assert xyz.is_contiguous()
         assert min_radius < max_radius
 
+        # selected samples are not sorted based on the distance
+        # larger center-xyz can better benifits from GPU
         B, N, _ = xyz.size()
         npoint = center_xyz.size(1)
         idx = torch.cuda.IntTensor(B, npoint, sample_num).zero_()

@@ -163,6 +163,10 @@ class VoteModule(nn.Module):
         """
         batch_size, num_seed = seed_points.shape[:2]
 
+        # vote_targets_mask is bool, (B, 20000), reflecting whether a point is in boxes
+        # seed_indices, (B, 1024), reflecting kept points (or seeds)
+        # seed_gt_votes_mask, (B, 1024), reflecting whether a seed is in boxes. For those
+        #   seeds in boxes, we'll calc a vote loss
         seed_gt_votes_mask = torch.gather(vote_targets_mask, 1,
                                           seed_indices).float()
 

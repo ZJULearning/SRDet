@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
+import time
 from mmcv.cnn import ConvModule
 from torch import nn as nn
 from torch.nn import functional as F
@@ -131,6 +132,9 @@ class BasePointSAModule(nn.Module):
             indices = self.points_sampler(points_xyz, features)
             new_xyz = gather_points(xyz_flipped, indices).transpose(
                 1, 2).contiguous() if self.num_point is not None else None
+        # torch.cuda.synchronize()
+        # end = time.perf_counter()
+        # print(f"sample: {(end - start) * 1e3}")
 
         return new_xyz, indices
 

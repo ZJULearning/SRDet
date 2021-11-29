@@ -1,6 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from __future__ import division
 
+try:
+    import _init_paths
+except:
+    pass
+
 import argparse
 import copy
 import mmcv
@@ -8,6 +13,8 @@ import os
 import time
 import torch
 import warnings
+import torch.distributed as dist
+from collections import OrderedDict
 from mmcv import Config, DictAction
 from mmcv.runner import get_dist_info, init_dist
 from os import path as osp
@@ -20,6 +27,13 @@ from mmdet3d.models import build_model
 from mmdet3d.utils import collect_env, get_root_logger
 from mmdet.apis import set_random_seed
 from mmseg import __version__ as mmseg_version
+
+def lr_autoscale(lr, base_total_bs, bs_per_gpu):
+    try:
+        lr = lr / base_total_bs * torch.distributed.get_world_size() * bs_per_gpu
+    except:
+        print("lr rescale failed!")
+    return lr
 
 
 def parse_args():
@@ -76,6 +90,10 @@ def parse_args():
         '--autoscale-lr',
         action='store_true',
         help='automatically scale lr with the number of gpus')
+    parser.add_argument('--port', type=int, default=0)
+    parser.add_argument('--batch_size', type=int, default=0)
+    parser.add_argument('--load_from', type=str, default='none')
+    parser.add_argument('--speed', choices=['train', 'test'], help='get speed')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -120,6 +138,12 @@ def main():
     if args.autoscale_lr:
         # apply the linear scaling rule (https://arxiv.org/abs/1706.02677)
         cfg.optimizer['lr'] = cfg.optimizer['lr'] * len(cfg.gpu_ids) / 8
+    if args.port != 0:
+        cfg.dist_params['port'] = args.port
+    if args.batch_size != 0:
+        cfg.data['samples_per_gpu'] = args.batch_size
+    if args.load_from != 'none':
+        cfg.load_from = args.load_from
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
@@ -130,6 +154,10 @@ def main():
         # re-set gpu_ids with distributed training mode
         _, world_size = get_dist_info()
         cfg.gpu_ids = range(world_size)
+
+    cfg.optimizer['lr'] = lr_autoscale(cfg.optimizer['lr'], 8 * cfg.data['samples_per_gpu'],
+                                       cfg.data['samples_per_gpu'])
+
 
     # create work_dir
     mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
@@ -214,7 +242,6 @@ def main():
         validate=(not args.no_validate),
         timestamp=timestamp,
         meta=meta)
-
 
 if __name__ == '__main__':
     main()

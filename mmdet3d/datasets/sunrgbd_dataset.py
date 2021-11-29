@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import mmcv
 import numpy as np
 from collections import OrderedDict
 from os import path as osp
@@ -101,13 +102,13 @@ class SUNRGBDDataset(Custom3DDataset):
                 info['image']['image_path'])
             input_dict['img_prefix'] = None
             input_dict['img_info'] = dict(filename=img_filename)
-            calib = info['calib']
-            rt_mat = calib['Rt']
-            # follow Coord3DMode.convert_point
-            rt_mat = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]
-                               ]) @ rt_mat.transpose(1, 0)
-            depth2img = calib['K'] @ rt_mat
-            input_dict['depth2img'] = depth2img
+            # calib = info['calib']
+            # rt_mat = calib['Rt']
+            # # follow Coord3DMode.convert_point
+            # rt_mat = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]
+            #                    ]) @ rt_mat.transpose(1, 0)
+            # depth2img = calib['K'] @ rt_mat
+            # input_dict['depth2img'] = depth2img
 
         if not self.test_mode:
             annos = self.get_ann_info(index)

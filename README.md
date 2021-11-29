@@ -14,7 +14,7 @@ A simple, fast, efficient and end-to-end 3D object detector **without NMS**.
 |[MLCVNet](https://arxiv.org/abs/2004.05679) | PointNet++ | 64.5 | 41.4 | 6.7 | -|
 |[BRNet](https://arxiv.org/abs/2006.05682) | PointNet++ | 66.1 |  50.9| 8.7| - |
 |[Group-Free](https://arxiv.org/abs/2104.00678) | PointNet++ | 67.3 | 48.9 | 7.1|-|
-|Ours | PointNet++ | 66.2 | 53.5 | **13.5** |[model_ckpt](https://1drv.ms/u/s!AoLLF1KOJvApgSkw6GsketVWnND9?e=mnea2u)|
+|Ours | PointNet++ | 66.2 | 53.5 | **13.5** |[model_ckpt](https://1drv.ms/u/s!AoLLF1KOJvApgSrXshEbANYLWYKF)|
 ### SUN RGB-D
 
 |Method | backbone | mAP@0.25 | mAP@0.5 | Ckpt |
@@ -24,7 +24,7 @@ A simple, fast, efficient and end-to-end 3D object detector **without NMS**.
 |[MLCVNet](https://arxiv.org/abs/2004.05679)|PointNet++ |  59.8 | - |  -| 
 |[BRNet](https://arxiv.org/abs/2006.05682) | PointNet++ |  61.1| 43.7|  -|
 |[Group-Free](https://arxiv.org/abs/2104.00678) | PointNet++ | 63.0 | 45.2 |  - |
-|Ours | PointNet++ | 60.0 | 44.7| [model_ckpt](https://1drv.ms/u/s!AoLLF1KOJvApgSpGbDbECuKCc_DG) |
+|Ours | PointNet++ | 60.0 | 44.7| [model_ckpt](https://1drv.ms/u/s!AoLLF1KOJvApgSrXshEbANYLWYKF) |
 
 The FPS is tested on a V100 GPU.
 
@@ -44,12 +44,12 @@ This repository is based on mmdetection3d, please follow this [page](https://git
 For SCANNET.
 
 ```shell
-CUDA_VISIBLE_DEVICES=0,1 PORT=29600 ./tools/dist_train.sh configs/sp/scannet_baseline.py 2
+CUDA_VISIBLE_DEVICES=0,1 PORT=29600 ./tools/dist_train.sh configs/sr/scannet_baseline.py 2
 ```
 
 For SUNRGBD
 ```shell
-CUDA_VISIBLE_DEVICES=0,1 PORT=29600 ./tools/dist_train.sh configs/sp/sunrgbd_baseline.py 2
+CUDA_VISIBLE_DEVICES=0,1 PORT=29600 ./tools/dist_train.sh configs/sr/sunrgbd_baseline.py 2
 ```
 
 </details>
@@ -63,12 +63,12 @@ Please first download the ckpt from the ckpt link provided above.
 Then for SCANNET.
 
 ```shell
-./tools/dist_test.sh configs/sp/scannet_baseline.py epoch_30.pth 2 --eval mAP
+./tools/dist_test.sh configs/sr/scannet_baseline.py epoch_30.pth 2 --eval mAP
 ```
 
 For SUNRGBD
 ```shell
-./tools/dist_test.sh configs/sp/sunrgbd_baseline.py epoch_33.pth 4 --eval mAP
+./tools/dist_test.sh configs/sr/sunrgbd_baseline.py epoch_33.pth 4 --eval mAP
 ```
 
 </details>
@@ -82,5 +82,10 @@ Our code is based on wonderful [mmdetection3d](https://github.com/open-mmlab/mmd
 If you find this project useful in your research, please consider cite:
 
 ```
-TBD
+@article{liu2021suppress,
+  title={Suppress-and-Refine Framework for End-to-End 3D Object Detection},
+  author={Liu, Zili and Xu, Guodong and Yang, Honghui and Chen, Minghao and Wu, Kuoliang and Yang, Zheng and Liu, Haifeng and Cai, Deng},
+  journal={arXiv preprint arXiv:2103.10042},
+  year={2021}
+}
 ```

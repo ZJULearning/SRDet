@@ -24,6 +24,8 @@ def get_sampler_type(sampler_type):
         sampler = FFPS_Sampler
     elif sampler_type == 'FS':
         sampler = FS_Sampler
+    elif sampler_type == 'RS':
+        sampler = RS_Sampler
     else:
         raise ValueError('Only "sampler_type" of "D-FPS", "F-FPS", or "FS"'
                          f' are supported, got {sampler_type}')
@@ -156,3 +158,17 @@ class FS_Sampler(nn.Module):
         fps_idx_dfps = furthest_point_sample(points, npoint)
         fps_idx = torch.cat([fps_idx_ffps, fps_idx_dfps], dim=1)
         return fps_idx
+
+
+class RS_Sampler(nn.Module):
+
+    def __init__(self):
+        super(RS_Sampler, self).__init__()
+
+    def forward(self, points, features, npoint):
+        fps_idx = []
+        for _ in range(points.shape[0]):
+            fps_idx.append(torch.randperm(points.shape[1], dtype=torch.int32)[:npoint])
+        fps_idx = torch.stack(fps_idx, dim=0).to(points.device)
+        return fps_idx
+

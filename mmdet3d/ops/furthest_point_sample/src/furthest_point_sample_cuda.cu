@@ -30,11 +30,12 @@ __global__ void furthest_point_sampling_kernel(
   // tmp: (B, N)
   // output:
   //      idx: (B, M)
-
+  // select m points from n points.
   if (m <= 0) return;
   __shared__ float dists[block_size];
   __shared__ int dists_i[block_size];
 
+  // for a single batch
   int batch_index = blockIdx.x;
   dataset += batch_index * n * 3;
   temp += batch_index * n;
@@ -47,12 +48,14 @@ __global__ void furthest_point_sampling_kernel(
   if (threadIdx.x == 0) idxs[0] = old;
 
   __syncthreads();
+  // select m times sequentially
   for (int j = 1; j < m; j++) {
     int besti = 0;
     float best = -1;
     float x1 = dataset[old * 3 + 0];
     float y1 = dataset[old * 3 + 1];
     float z1 = dataset[old * 3 + 2];
+    // in each selection, we need to calc n times ('stride' threads in total)
     for (int k = tid; k < n; k += stride) {
       float x2, y2, z2;
       x2 = dataset[k * 3 + 0];

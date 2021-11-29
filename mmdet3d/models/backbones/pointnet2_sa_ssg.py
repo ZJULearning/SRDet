@@ -45,6 +45,8 @@ class PointNet2SASSG(BasePointNet):
                      pool_mod='max',
                      use_xyz=True,
                      normalize_xyz=True),
+                 fps_mods=(('D-FPS'), ('D-FPS'), ('D-FPS'), ('D-FPS')),
+                 scale=1,
                  init_cfg=None):
         super().__init__(init_cfg=init_cfg)
         self.num_sa = len(sa_channels)
@@ -60,15 +62,20 @@ class PointNet2SASSG(BasePointNet):
 
         for sa_index in range(self.num_sa):
             cur_sa_mlps = list(sa_channels[sa_index])
+            # cur_sa_mlps = [int(sa_mlp * scale) for sa_mlp in cur_sa_mlps]
             cur_sa_mlps = [sa_in_channel] + cur_sa_mlps
             sa_out_channel = cur_sa_mlps[-1]
-
+            if isinstance(fps_mods[sa_index], tuple):
+                cur_fps_mod = list(fps_mods[sa_index])
+            else:
+                cur_fps_mod = list([fps_mods[sa_index]])
             self.SA_modules.append(
                 build_sa_module(
                     num_point=num_points[sa_index],
                     radius=radius[sa_index],
                     num_sample=num_samples[sa_index],
                     mlp_channels=cur_sa_mlps,
+                    fps_mod=cur_fps_mod,
                     norm_cfg=norm_cfg,
                     cfg=sa_cfg))
             skip_channel_list.append(sa_out_channel)
@@ -80,6 +87,7 @@ class PointNet2SASSG(BasePointNet):
         fp_target_channel = skip_channel_list.pop()
         for fp_index in range(len(fp_channels)):
             cur_fp_mlps = list(fp_channels[fp_index])
+            # cur_fp_mlps = [int(fp_mlp * scale) for fp_mlp in cur_fp_mlps]
             cur_fp_mlps = [fp_source_channel + fp_target_channel] + cur_fp_mlps
             self.FP_modules.append(PointFPModule(mlp_channels=cur_fp_mlps))
             if fp_index != len(fp_channels) - 1:

@@ -471,11 +471,13 @@ class VoteHead(BaseModule):
             vote_target_masks = points.new_zeros([num_points],
                                                  dtype=torch.long)
             vote_target_idx = points.new_zeros([num_points], dtype=torch.long)
+            # box_indices_all, (20000, box num), reflecting that each point is in which box
             box_indices_all = gt_bboxes_3d.points_in_boxes(points)
             for i in range(gt_labels_3d.shape[0]):
                 box_indices = box_indices_all[:, i]
                 indices = torch.nonzero(
                     box_indices, as_tuple=False).squeeze(-1)
+                # points which are in the i-th box
                 selected_points = points[indices]
                 vote_target_masks[indices] = 1
                 vote_targets_tmp = vote_targets[indices]
