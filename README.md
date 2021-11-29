@@ -1,6 +1,8 @@
 # Suppress-and-Reﬁne Framework for End-to-End 3D Object Detection
 
 A simple, fast, efficient and end-to-end 3D object detector **without NMS**. 
+
+## Getting Started
   
 ## Main results
 ### ScanNet V2
@@ -28,7 +30,48 @@ The FPS is tested on a V100 GPU.
 
 ## Quick start
 
-Our code will be released soon.
+
+<details>
+<summary>Installation</summary>
+
+This repository is based on mmdetection3d, please follow this [page](https://github.com/open-mmlab/mmdetection3d/blob/master/docs/getting_started.md) for installation guidance.
+
+</details>
+
+<details>
+<summary>Reproduce our results on SCANNET and SUNRGBD</summary>
+
+For SCANNET.
+
+```shell
+CUDA_VISIBLE_DEVICES=0,1 PORT=29600 ./tools/dist_train.sh configs/sp/scannet_baseline.py 2
+```
+
+For SUNRGBD
+```shell
+CUDA_VISIBLE_DEVICES=0,1 PORT=29600 ./tools/dist_train.sh configs/sp/sunrgbd_baseline.py 2
+```
+
+</details>
+
+
+<details>
+<summary>Evaluation</summary>
+
+Please first download the ckpt from the ckpt link provided above.
+
+Then for SCANNET.
+
+```shell
+./tools/dist_test.sh configs/sp/scannet_baseline.py epoch_30.pth 2 --eval mAP
+```
+
+For SUNRGBD
+```shell
+./tools/dist_test.sh configs/sp/sunrgbd_baseline.py epoch_33.pth 4 --eval mAP
+```
+
+</details>
 
 ## Acknowledgement
 
@@ -36,4 +79,8 @@ Our code is based on wonderful [mmdetection3d](https://github.com/open-mmlab/mmd
 
 ## Citation
 
-If you find this project useful in your research, please consider cite.
+If you find this project useful in your research, please consider cite:
+
+```
+TBD
+```
