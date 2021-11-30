@@ -47,9 +47,6 @@ For SCANNET.
 
 ```shell
 CUDA_VISIBLE_DEVICES=0,1 PORT=29600 ./tools/dist_train.sh configs/sr/scannet_baseline.py 2
-CUDA_VISIBLE_DEVICES=2,3 PORT=29601 ./tools/dist_train.sh configs/sr/scannet_baseline.py 2
-CUDA_VISIBLE_DEVICES=4,5 PORT=29602 ./tools/dist_train.sh configs/sr/scannet_baseline.py 2
-CUDA_VISIBLE_DEVICES=6,7 PORT=29603 ./tools/dist_train.sh configs/sr/scannet_baseline.py 2
 ```
 
 For SUNRGBD
